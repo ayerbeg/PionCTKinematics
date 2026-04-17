@@ -1,4 +1,4 @@
-# pionCT_kinematics_v2.C
+# pionCT_kinematics.C
 
 ROOT macro for computing exclusive pion electroproduction kinematics at forward production.
 
@@ -21,19 +21,19 @@ dominated cross sections.
 ## Usage
 
 ```bash
-root -l -q "pionCT_kinematics_v2.C+(5.0, 10.7, \"W\", 2.42)"
-root -l -q "pionCT_kinematics_v2.C+(5.0, 10.7, \"t\", -0.40)"
-root -l -q "pionCT_kinematics_v2.C+()"
+root -l -q "pionCT_kinematics.C+(5.0, 10.7, \"W\", 2.42)"
+root -l -q "pionCT_kinematics.C+(5.0, 10.7, \"t\", -0.40)"
+root -l -q "pionCT_kinematics.C+()"
 ```
 
 Or interactively:
 
 ```
 root -l
-.L pionCT_kinematics_v2.C+
-pionCT_kinematics_v2(5.0, 10.7, "W", 2.42)
-pionCT_kinematics_v2(5.0, 10.7, "t", -0.40)
-pionCT_kinematics_v2()
+.L pionCT_kinematics.C+
+pionCT_kinematics(5.0, 10.7, "W", 2.42)
+pionCT_kinematics(5.0, 10.7, "t", -0.40)
+pionCT_kinematics()
 ```
 
 ### Arguments
@@ -50,7 +50,7 @@ pionCT_kinematics_v2()
 ### Mode A — specify W directly
 
 ```
-pionCT_kinematics_v2(Q2, Ebeam, "W", W_value)
+pionCT_kinematics(Q2, Ebeam, "W", W_value)
 ```
 
 Computes all lab observables at the given W and Q², at θ\* = 0. Reports
@@ -58,13 +58,13 @@ Computes all lab observables at the given W and Q², at θ\* = 0. Reports
 
 **Example:**
 ```
-pionCT_kinematics_v2(5.0, 10.7, "W", 2.42)
+pionCT_kinematics(5.0, 10.7, "W", 2.42)
 ```
 
 ### Mode B — specify t_min
 
 ```
-pionCT_kinematics_v2(Q2, Ebeam, "t", t_target)
+pionCT_kinematics(Q2, Ebeam, "t", t_target)
 ```
 
 Finds the W such that `t_min(W, Q², E) = t_target` using bisection, then
@@ -73,13 +73,13 @@ reference kinematic table.
 
 **Example:**
 ```
-pionCT_kinematics_v2(5.0, 10.7, "t", -0.40)
+pionCT_kinematics(5.0, 10.7, "t", -0.40)
 ```
 
 ### Mode C — comparison table
 
 ```
-pionCT_kinematics_v2()
+pionCT_kinematics()
 ```
 
 Prints the full computed table for Q² ∈ {5.0, 6.5, 7.5, 8.5} GeV² at
@@ -178,7 +178,7 @@ GeV² is **W ≈ 3.091 GeV**. Use Mode B to get the self-consistent values.
 
 | File | Description |
 |---|---|
-| `pionCT_kinematics_v2.C` | This macro |
+| `pionCT_kinematics.C` | This macro |
 | `pion_kinematics.pdf` | Detailed derivation of all formulas with physics context |
 | `pion_kinematics.tex` | LaTeX source for the above |
 
