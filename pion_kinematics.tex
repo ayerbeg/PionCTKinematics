@@ -1,0 +1,502 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{physics}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{mdframed}
+
+\geometry{margin=2.5cm}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!60!black,
+    citecolor=blue!60!black,
+    urlcolor=blue!60!black
+}
+
+\titleformat{\section}{\large\bfseries}{}{0em}{\thesection\quad}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{\thesubsection\quad}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small Exclusive Pion Electroproduction Kinematics}
+\lhead{\small \leftmark}
+\cfoot{\thepage}
+
+% Box for important results
+\newmdenv[
+  backgroundcolor=blue!5,
+  linecolor=blue!40,
+  linewidth=1pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt
+]{importantbox}
+
+% Box for code/algorithm
+\newmdenv[
+  backgroundcolor=gray!8,
+  linecolor=gray!50,
+  linewidth=1pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt
+]{codebox}
+
+\begin{document}
+
+% ============================================================
+%  Title
+% ============================================================
+\begin{center}
+  {\LARGE\bfseries Kinematics of Exclusive Pion Electroproduction}\\[0.8em]
+  {\large\bfseries Forward Production and the Mandelstam Variable $t$}\\[1.2em]
+  {\normalsize Reference document for \texttt{pionCT\_kinematics.C}}\\[0.4em]
+  {\small\color{gray} Derived from analysis of JLab pion electroproduction experiments}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1.5em}
+
+\tableofcontents
+
+\newpage
+
+% ============================================================
+\section{Reaction Overview}
+% ============================================================
+
+We consider the exclusive charged-pion electroproduction reaction in the
+one-photon-exchange approximation:
+\begin{equation}
+  e(k) \;+\; p(P) \;\longrightarrow\; e'(k') \;+\; \pi^+(p_\pi) \;+\; n(P'),
+  \label{eq:reaction}
+\end{equation}
+where the quantities in parentheses are the four-momenta of each particle.
+The incoming electron has energy $E$ and scatters to energy $E'$ at polar
+angle $\theta_e$ relative to the beam axis. The target proton is at rest in
+the laboratory frame.
+
+\subsection{Four-momenta}
+
+Working in natural units ($c = \hbar = 1$), the relevant four-momenta are:
+\begin{align}
+  k   &= (E,\, \vec{k})                  && \text{incoming electron,}\\
+  k'  &= (E',\, \vec{k}')                && \text{scattered electron,}\\
+  q   &= k - k' = (\nu,\, \vec{q}\,)    && \text{virtual photon,}\\
+  P   &= (M_p,\, \vec{0}\,)             && \text{target proton (at rest),}\\
+  p_\pi &= (E_\pi,\, \vec{p}_\pi)        && \text{produced pion,}\\
+  P'  &                                  && \text{recoil neutron.}
+\end{align}
+The particle masses used throughout are
+\begin{equation}
+  M_p = 0.938272\;\text{GeV},\qquad
+  M_n = 0.939565\;\text{GeV},\qquad
+  M_\pi = 0.139571\;\text{GeV}.
+\end{equation}
+
+% ============================================================
+\section{Lorentz Invariants}
+% ============================================================
+
+\subsection{Virtuality \texorpdfstring{$Q^2$}{Q2}}
+
+The four-momentum transfer from the electron to the hadronic system defines
+the virtuality of the exchanged photon:
+\begin{equation}
+  Q^2 \;\equiv\; -q^2 \;=\; 4 E E' \sin^2\!\frac{\theta_e}{2}.
+  \label{eq:Q2}
+\end{equation}
+$Q^2$ is defined as a positive quantity. It controls the resolution of the
+virtual photon probe: large $Q^2$ means short-wavelength, hard scattering.
+
+\subsection{Energy transfer and photon three-momentum}
+
+\begin{align}
+  \nu &\;\equiv\; E - E' \label{eq:nu}\\[4pt]
+  |\vec{q}\,| &\;=\; \sqrt{\nu^2 + Q^2} \label{eq:qmag}
+\end{align}
+
+\subsection{Hadronic invariant mass \texorpdfstring{$W$}{W}}
+
+$W$ is the invariant mass of the hadronic final state ($\pi n$ system):
+\begin{equation}
+  W^2 \;\equiv\; (P + q)^2 \;=\; M_p^2 + 2 M_p \nu - Q^2.
+  \label{eq:W2}
+\end{equation}
+Given $Q^2$, $E$, and a chosen $W$, the scattered electron energy follows
+directly:
+\begin{equation}
+  \nu = \frac{W^2 - M_p^2 + Q^2}{2 M_p},
+  \qquad
+  E' = E - \nu.
+  \label{eq:Eprime}
+\end{equation}
+Pion production requires $W > M_p + M_\pi$.
+
+\subsection{Electron scattering angle}
+
+Inverting Eq.~\eqref{eq:Q2}:
+\begin{equation}
+  \theta_e = 2\arcsin\!\sqrt{\frac{Q^2}{4 E E'}}.
+  \label{eq:thetae}
+\end{equation}
+
+% ============================================================
+\section{Virtual Photon Three-Vector in the Lab}
+% ============================================================
+
+The beam defines the $+z$ direction. The electron scatters in the $(x,z)$
+plane (we choose $\phi = 0$):
+\begin{align}
+  \vec{k}  &= (0,\; 0,\; E),\\
+  \vec{k}' &= (E' \sin\theta_e,\; 0,\; E' \cos\theta_e).
+\end{align}
+The virtual photon three-vector is therefore
+\begin{equation}
+  \vec{q} = \vec{k} - \vec{k}' =
+  \begin{pmatrix} -E' \sin\theta_e \\ 0 \\ E - E' \cos\theta_e \end{pmatrix}.
+  \label{eq:qvec}
+\end{equation}
+Note that $|\vec{q}\,|$ computed from Eq.~\eqref{eq:qvec} is numerically
+identical to $\sqrt{\nu^2 + Q^2}$ (Eq.~\eqref{eq:qmag}), providing a useful
+cross-check. The unit vector along $\vec{q}$ and its in-plane perpendicular
+are:
+\begin{equation}
+  \hat{q} = \frac{\vec{q}}{|\vec{q}\,|},
+  \qquad
+  \hat{q}_\perp = \begin{pmatrix} -q_z/|\vec{q}\,| \\ 0 \\ q_x/|\vec{q}\,| \end{pmatrix}.
+  \label{eq:qhat}
+\end{equation}
+
+% ============================================================
+\section{Two-Body CM Kinematics}
+% ============================================================
+
+The hadronic system is treated as a two-body final state:
+\begin{equation}
+  \gamma^*(q) + p(P) \;\longrightarrow\; \pi(p_\pi) + n(P').
+\end{equation}
+
+\subsection{CM pion momentum}
+
+In the hadronic CM frame the pion momentum magnitude $p^*$ is fixed by $W$
+alone (standard two-body kinematics):
+\begin{equation}
+  \boxed{
+  p^* \;\equiv\; |\vec{p}_\pi^{\,*}|
+     \;=\; \frac{1}{2W}
+       \sqrt{\bigl[W^2 - (M_p + M_\pi)^2\bigr]\,\bigl[W^2 - (M_p - M_\pi)^2\bigr]}.
+  }
+  \label{eq:pstar}
+\end{equation}
+The corresponding CM pion energy is $E_\pi^* = \sqrt{(p^*)^2 + M_\pi^2}$.
+
+\subsection{CM pion four-vector}
+
+With the CM polar angle $\theta^*$ (measured from the $\vec{q}$ direction)
+and azimuthal angle $\phi^* = 0$, the pion four-vector in the CM is:
+\begin{equation}
+  p_\pi^{*\,\mu} = \bigl(E_\pi^*,\; p^* \sin\theta^*,\; 0,\; p^* \cos\theta^*\bigr),
+  \label{eq:piCM}
+\end{equation}
+where the $z$-axis in the CM is aligned with $\vec{q}$.
+
+% ============================================================
+\section{Lorentz Boost to the Laboratory}
+% ============================================================
+
+\subsection{Boost velocity}
+
+The hadronic CM frame moves along $\vec{q}$ with velocity
+\begin{equation}
+  \beta_\text{CM} = \frac{|\vec{q}\,|}{M_p + \nu},
+  \qquad
+  \gamma_\text{CM} = \frac{1}{\sqrt{1 - \beta_\text{CM}^2}}.
+  \label{eq:betaCM}
+\end{equation}
+This is a \emph{vector} boost along $\hat{q}$, not along the beam axis.
+
+\subsection{Decomposition in the CM}
+
+The pion momentum in the CM is decomposed along and perpendicular to $\hat{q}$:
+\begin{align}
+  p_\parallel^* &= p^* \cos\theta^*  && \text{(along } \hat{q}\text{)},\\
+  p_\perp^*     &= p^* \sin\theta^*  && \text{(perpendicular to } \hat{q}\text{)}.
+\end{align}
+
+\subsection{Boost equations}
+
+The Lorentz boost along $\hat{q}$ transforms the components as:
+\begin{align}
+  p_\parallel^\text{lab} &= \gamma_\text{CM}\bigl(p_\parallel^* + \beta_\text{CM}\,E_\pi^*\bigr),
+  \label{eq:boost_par}\\
+  E_\pi^\text{lab}       &= \gamma_\text{CM}\bigl(E_\pi^* + \beta_\text{CM}\,p_\parallel^*\bigr),
+  \label{eq:boost_E}\\
+  p_\perp^\text{lab}     &= p_\perp^*.
+  \label{eq:boost_perp}
+\end{align}
+The perpendicular component is unchanged by the boost.
+
+\subsection{Lab Cartesian components}
+
+Projecting back onto the beam frame $(x,z)$ axes using $\hat{q}$ and
+$\hat{q}_\perp$ from Eq.~\eqref{eq:qhat}:
+\begin{align}
+  p_{\pi,x}^\text{lab} &= p_\parallel^\text{lab}\,\hat{q}_x
+                          + p_\perp^\text{lab}\,\hat{q}_{\perp,x},
+  \label{eq:ppix}\\
+  p_{\pi,z}^\text{lab} &= p_\parallel^\text{lab}\,\hat{q}_z
+                          + p_\perp^\text{lab}\,\hat{q}_{\perp,z}.
+  \label{eq:ppiz}
+\end{align}
+
+\begin{importantbox}
+\textbf{Important:} This vector-boost recipe is exact and requires no
+subsequent rotation. A common error is to boost along $+z$ first and then
+apply a \texttt{RotateY} correction --- this is only an approximation and
+introduces small errors when $\theta_e$ is large.
+\end{importantbox}
+
+% ============================================================
+\section{Laboratory Pion Observables}
+% ============================================================
+
+\subsection{Momentum and angle}
+
+\begin{align}
+  |\vec{p}_\pi| &= \sqrt{p_{\pi,x}^2 + p_{\pi,z}^2},
+  \label{eq:pmag}\\[4pt]
+  \theta_\pi &= \arctan\!\left(\frac{|p_{\pi,x}|}{p_{\pi,z}}\right),
+  \label{eq:thetapi}
+\end{align}
+where $\theta_\pi$ is the polar angle of the pion relative to the beam axis.
+
+\subsection{Longitudinal momentum surplus \texorpdfstring{$k_\pi$}{kpi}}
+
+The quantity $k_\pi$ listed in kinematic tables is:
+\begin{equation}
+  k_\pi \;\equiv\; |\vec{q}\,| - |\vec{p}_\pi|.
+  \label{eq:kpi}
+\end{equation}
+At $\theta^* = 0$ (forward production), the pion travels exactly along
+$\vec{q}$, so $k_\pi = |\vec{q}\,| - |\vec{p}_\pi|$ equals the longitudinal
+momentum surplus of the virtual photon over the pion. It is approximately
+$\sqrt{|t_\text{min}|}$ for small $|t|$.
+
+% ============================================================
+\section{The Mandelstam Variable \texorpdfstring{$t$}{t}}
+% ============================================================
+
+\subsection{Definition}
+
+\begin{equation}
+  t \;\equiv\; (q - p_\pi)^2
+    \;=\; (\nu - E_\pi)^2 - |\vec{q} - \vec{p}_\pi|^2.
+  \label{eq:t}
+\end{equation}
+Expanding:
+\begin{equation}
+  t = (\nu - E_\pi)^2 - (q_x - p_{\pi,x})^2 - (q_z - p_{\pi,z})^2.
+  \label{eq:t_expanded}
+\end{equation}
+$t$ is always negative for physical forward production. It measures the
+four-momentum transferred from the virtual photon to the pion, or
+equivalently, from the initial proton to the recoil neutron:
+$t = (P - P')^2$.
+
+\subsection{Physical interpretation}
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{$t = 0$:} would require perfect collinearity of photon and
+    pion four-momenta; kinematically inaccessible due to mass differences.
+  \item \textbf{$t \to t_\text{min}$:} pion goes forward in the CM
+    ($\theta^* = 0$), minimum momentum transfer. The cross section peaks here,
+    driven by pion-pole exchange.
+  \item \textbf{$t \ll t_\text{min}$} (large $|t|$): pion is produced at
+    large CM angle; cross section falls steeply, suppressed by form factors.
+\end{itemize}
+
+In the near-forward limit, $t$ is related to the CM transverse momentum by:
+\begin{equation}
+  -t \;\approx\; (k_T^\text{CM})^2 + \text{(small longitudinal term)}
+     \;=\; (p^* \sin\theta^*)^2 + \mathcal{O}\!\left(\frac{1}{W^2}\right).
+  \label{eq:t_approx}
+\end{equation}
+
+\subsection{Minimum value \texorpdfstring{$t_\text{min}$}{tmin}}
+
+$t_\text{min}$ is the value of $t$ at $\theta^* = 0$. It is a hard
+kinematic boundary: \emph{every} event at a given $(W, Q^2, E)$ satisfies
+$t \leq t_\text{min} < 0$. No event can have $|t| < |t_\text{min}|$.
+
+\begin{importantbox}
+$t_\text{min}$ is computed by evaluating Eq.~\eqref{eq:t_expanded} at
+$\theta^* = 0$, which gives a pion traveling exactly along $\hat{q}$ in the
+lab. It depends on $W$, $Q^2$, and $E$.
+\end{importantbox}
+
+Table~\ref{tab:tmin} shows $t_\text{min}$ for the four kinematic settings
+at $E = 10.7\;\text{GeV}$.
+
+\begin{table}[h!]
+\centering
+\caption{Kinematic settings with $E = 10.7\;\text{GeV}$, forward pion
+production ($\theta^* = 0$). The $t_\text{min}$ column is the physically
+computed value; the $t_\text{table}$ column is what appears in the reference
+table. For Q$^2$ = 8.5 the two values differ significantly: $W = 2.95\;\text{GeV}$
+and $t = -0.40\;\text{GeV}^2$ cannot coexist.}
+\label{tab:tmin}
+\begin{tabular}{ccccccccc}
+\toprule
+$Q^2$ & $W$ & $E'$ & $\theta_e$ & $\theta_\pi$ & $p_\pi$ & $k_\pi$
+& $t_\text{min}$ & $t_\text{table}$ \\
+(GeV$^2$) & (GeV) & (GeV) & (deg) & (deg) & (GeV/$c$) & (GeV)
+& (GeV$^2$) & (GeV$^2$) \\
+\midrule
+5.0 & 2.42 & 5.384 & 16.94 & 15.79 & 5.103 & 0.665 & $-0.397$ & $-0.40$ \\
+6.5 & 2.72 & 3.763 & 23.18 & 11.56 & 6.722 & 0.669 & $-0.402$ & $-0.40$ \\
+7.5 & 2.89 & 2.722 & 29.40 &  9.11 & 7.759 & 0.677 & $-0.410$ & $-0.40$ \\
+8.5 & 2.95 & 2.002 & 36.72 &  7.50 & 8.451 & 0.723 & $-0.462$ & $-0.40$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{The \texorpdfstring{$t$}{t} Cut in Practice}
+% ============================================================
+
+In an exclusive electroproduction analysis, events are accepted within a
+range of $t$:
+\begin{equation}
+  t_\text{min}(W,Q^2,E) \;\leq\; t \;\leq\; t_\text{cut}.
+  \label{eq:trange}
+\end{equation}
+The upper bound $t_\text{cut}$ (closest to zero) is chosen to isolate the
+forward-production region where the cross section is dominated by pion-pole
+exchange and backgrounds are minimised.
+
+\textbf{When $|t_\text{cut}| < |t_\text{min}|$} (i.e.\ $t_\text{cut} >
+t_\text{min}$), the cut window is empty: no events exist with $|t|$ smaller
+than $|t_\text{min}|$. This is the situation for $Q^2 = 8.5\;\text{GeV}^2$,
+$W = 2.95\;\text{GeV}$ in Table~\ref{tab:tmin}, where $|t_\text{min}| =
+0.462 > 0.40$.
+
+% ============================================================
+\section{Algorithm Summary}
+% ============================================================
+
+The code \texttt{pionCT\_kinematics.C} implements two usage modes.
+
+\subsection{Mode A: $W$ as input}
+
+Given $(Q^2,\, E,\, W)$:
+\begin{enumerate}[label=\arabic*.]
+  \item Compute $\nu$ and $E'$ from Eqs.~\eqref{eq:W2}--\eqref{eq:Eprime}.
+  \item Compute $\theta_e$ from Eq.~\eqref{eq:thetae}.
+  \item Build $\vec{q}$ from Eq.~\eqref{eq:qvec}; compute $|\vec{q}\,|$,
+    $\hat{q}$, $\hat{q}_\perp$.
+  \item Compute $\beta_\text{CM}$, $\gamma_\text{CM}$ from
+    Eq.~\eqref{eq:betaCM}.
+  \item Compute $p^*$ and $E_\pi^*$ from Eq.~\eqref{eq:pstar}.
+  \item At $\theta^* = 0$: set $p_\parallel^* = p^*$, $p_\perp^* = 0$.
+  \item Apply boost Eqs.~\eqref{eq:boost_par}--\eqref{eq:boost_perp}.
+  \item Compute lab components Eqs.~\eqref{eq:ppix}--\eqref{eq:ppiz}.
+  \item Compute $|\vec{p}_\pi|$, $\theta_\pi$, $k_\pi$, $t$ from
+    Eqs.~\eqref{eq:pmag}--\eqref{eq:t_expanded}.
+  \item Output is $t_\text{min}$ for this $W$.
+\end{enumerate}
+
+\subsection{Mode B: $t_\text{min}$ as input}
+
+Given $(Q^2,\, E,\, t_\text{target})$, find $W$ such that
+$t_\text{min}(W) = t_\text{target}$:
+\begin{enumerate}[label=\arabic*.]
+  \item Define $f(W) = t_\text{min}(W) - t_\text{target}$ using Mode A.
+  \item Scan $W$ from threshold upward to bracket the zero of $f$.
+  \item Apply bisection to find $W$ such that $|f(W)| < 10^{-9}$.
+  \item Run Mode A with the found $W$ to produce all observables.
+\end{enumerate}
+
+\begin{codebox}
+\textbf{Usage examples (ROOT):}\\[4pt]
+\texttt{// Mode A: specify W directly}\\
+\texttt{pionCT\_kinematics(5.0, 10.7, "W", 2.42)}\\[4pt]
+\texttt{// Mode B: find W from t\_min = -0.40}\\
+\texttt{pionCT\_kinematics(5.0, 10.7, "t", -0.40)}\\[4pt]
+\texttt{// Print full comparison table}\\
+\texttt{pionCT\_kinematics()}
+\end{codebox}
+
+% ============================================================
+\section{Corrected Reference Table}
+% ============================================================
+
+Table~\ref{tab:corrected} shows the kinematic settings computed using Mode B
+(exact $t_\text{min} = -0.40\;\text{GeV}^2$ for all rows). Note that for
+$Q^2 = 8.5\;\text{GeV}^2$ the correct $W$ is $3.091\;\text{GeV}$, not
+$2.95\;\text{GeV}$.
+
+\begin{table}[h!]
+\centering
+\caption{Corrected kinematic settings for $E = 10.7\;\text{GeV}$,
+$t_\text{min} = -0.40\;\text{GeV}^2$ exactly. $W$ is the primary output
+of the Mode B calculation. The $k_\pi$ value is identical for all rows
+by construction.}
+\label{tab:corrected}
+\begin{tabular}{cccccccc}
+\toprule
+$Q^2$ & $W$ & $E'$ & $\theta_e$ & $\theta_\pi$ & $p_\pi$ & $k_\pi$ & $t_\text{min}$ \\
+(GeV$^2$) & (GeV) & (GeV) & (deg) & (deg) & (GeV/$c$) & (GeV) & (GeV$^2$) \\
+\midrule
+5.0 & 2.414 & 5.399 & 16.917 & 15.849 & 5.086 & 0.667 & $-0.400$ \\
+6.5 & 2.725 & 3.749 & 23.223 & 11.517 & 6.737 & 0.667 & $-0.400$ \\
+7.5 & 2.914 & 2.649 & 29.810 &  8.906 & 7.837 & 0.667 & $-0.400$ \\
+8.5 & 3.091 & 1.548 & 41.976 &  6.188 & 8.938 & 0.667 & $-0.400$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Quick Reference: Formula Chain}
+% ============================================================
+
+\begin{align}
+  Q^2     &= 4EE'\sin^2\!\tfrac{\theta_e}{2}
+            \tag{\ref{eq:Q2}}\\
+  \nu     &= E - E'
+            \tag{\ref{eq:nu}}\\
+  |\vec{q}\,| &= \sqrt{\nu^2 + Q^2}
+            \tag{\ref{eq:qmag}}\\
+  W^2     &= M_p^2 + 2M_p\nu - Q^2
+            \tag{\ref{eq:W2}}\\
+  p^*     &= \frac{1}{2W}\sqrt{[W^2-(M_p+M_\pi)^2][W^2-(M_p-M_\pi)^2]}
+            \tag{\ref{eq:pstar}}\\
+  \vec{q} &= (-E'\sin\theta_e,\;0,\;E - E'\cos\theta_e)
+            \tag{\ref{eq:qvec}}\\
+  \beta_\text{CM} &= \frac{|\vec{q}\,|}{M_p + \nu}
+            \tag{\ref{eq:betaCM}}\\
+  p_\parallel^\text{lab} &= \gamma(p_\parallel^* + \beta E_\pi^*)
+            \tag{\ref{eq:boost_par}}\\
+  E_\pi^\text{lab} &= \gamma(E_\pi^* + \beta p_\parallel^*)
+            \tag{\ref{eq:boost_E}}\\
+  t       &= (\nu - E_\pi)^2 - |\vec{q} - \vec{p}_\pi|^2
+            \tag{\ref{eq:t}}\\
+  k_\pi   &= |\vec{q}\,| - |\vec{p}_\pi|
+            \tag{\ref{eq:kpi}}
+\end{align}
+
+\end{document}
